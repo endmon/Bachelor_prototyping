@@ -11,13 +11,13 @@ Deployment: https://developer.fastly.com/learning/compute/rust/
 ## TODO:
 
 * [X] Acheter un nom de domaine
-* [ ] Limite de budget cloud CHF 200.-
-* [ ] Configurer le CLI fastly en local
-* [ ] Créer un service de test
-* [ ] Partager les accès à ce service
-* [ ] Installer un environnement de développement rust
-* [ ] Installer le plugin rust IntelliJ (license education avec email heig-vd)
-* [ ] Déployer le rust starter kit
+* [X] Limite de budget cloud CHF 200.-
+* [X] Configurer le CLI fastly en local
+* [X] Créer un service de test
+* [X] Partager les accès à ce service
+* [X] Installer un environnement de développement rust
+* [X] Installer le plugin rust IntelliJ (license education avec email heig-vd)
+* [X] Déployer le rust starter kit
 * [ ] Adapter le rust starter kit au scenario d'aggrégation de contenu.
 
 ## Content aggregation
