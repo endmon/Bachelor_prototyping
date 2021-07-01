@@ -1,0 +1,9 @@
+# This file describes a Fastly Compute@Edge package. To learn more visit:
+# https://developer.fastly.com/reference/fastly-toml/
+
+authors = ["miguel.lopesgouveia@heig-vd.ch"]
+description = "Aggregation prototype"
+language = "rust"
+manifest_version = 1
+name = "Aggregation"
+service_id = ""
