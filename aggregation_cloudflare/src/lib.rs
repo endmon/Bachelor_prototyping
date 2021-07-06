@@ -5,6 +5,7 @@ mod utils;
 
 use cfg_if::cfg_if;
 use wasm_bindgen::prelude::*;
+use tokio;
 
 cfg_if! {
     // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
@@ -16,7 +17,20 @@ cfg_if! {
     }
 }
 
+#[tokio::main]
 #[wasm_bindgen]
-pub fn greet() -> String {
-    "Hello, wasm-worker!".to_string()
+pub async fn greet() -> String {
+    //let host = "http://miguel.gouveia.me";
+    //let a = host + "/a";
+    //let b = host + "/b";
+    let a = "http://miguel.gouveia.me/a";
+    let b = "http://miguel.gouveia.me/b";
+
+
+    let fetch_a = reqwest::get(a).await.unwrap().text().await.unwrap();
+    //let fetch_b = reqwest::get(b).await.unwrap().text().await.unwrap();
+    //let aggrega = format!("{}{}",fetch_a,fetch_b);
+
+    //"Hello, wasm-worker! \n Miguel \n aggrega".to_string()
+    fetch_a
 }
