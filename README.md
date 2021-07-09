@@ -25,11 +25,11 @@ Cloudflare
 * [X] Limite de budget cloud CHF 200.-
 * [X] Configurer le CLI Cloudflare en local
 * [X] Créer un service de test
-* [ ] Partager les accès à ce service
+* [x] Partager les accès à ce service
 * [X] Installer un environnement de développement rust
 * [X] Installer le plugin rust IntelliJ (license education avec email heig-vd)
 * [X] Déployer le rust starter kit
-* [ ] Adapter le rust starter kit au scenario d'aggrégation de contenu.
+* [x] Adapter le rust starter kit au scenario d'aggrégation de contenu.
 
 ## Content aggregation
 

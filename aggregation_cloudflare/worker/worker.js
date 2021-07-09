@@ -7,8 +7,12 @@ addEventListener('fetch', event => {
  * @param {Request} request
  */
 async function handleRequest(request) {
-    const { greet } = wasm_bindgen;
+
+    const { test } = wasm_bindgen;
     await wasm_bindgen(wasm)
-    const greeting = greet()
+    const greeting = await test()
+
+
+    //return new Response(JSON.stringify(greeting), {status: 200})
     return new Response(greeting, {status: 200})
 }
