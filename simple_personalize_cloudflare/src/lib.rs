@@ -7,7 +7,7 @@ use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{Request, RequestInit, Response};
 use log::{info, Level};
-use js_sys::JsString;
+use js_sys::{JsString, Boolean};
 
 mod utils;
 
@@ -31,6 +31,21 @@ cfg_if! {
     }
 }
 
+fn getCookie(request: Request, cookie_name: String) -> bool{
+    let mut result = false;
+    let cookieStringOption = request.headers().get("Cookie").unwrap();
+    if cookieStringOption.is_some() {
+        let cookieString = cookieStringOption.unwrap();
+        let cookies: Vec<&str> = cookieString.rsplit(";").collect(); //vecteur
+        for cookie in cookies.iter() {
+            if cookie.rsplit("=").into_iter().nth(0).unwrap() == cookie_name {
+                result = true
+            }
+        }
+    }
+    result
+}
+
 #[wasm_bindgen]
 pub fn test(request:Request) -> Result<String, JsValue> {
     let url = request.url();
@@ -38,5 +53,12 @@ pub fn test(request:Request) -> Result<String, JsValue> {
     let header = request.headers();
     let all = header.get("Accept-Language").unwrap().unwrap();
 
-    Ok(all)
+    let mut testt= "C'est votre première visite.";
+    if getCookie(request, "visite".parse().unwrap()) {
+        testt = "Bon retour.";
+    }
+
+
+
+    Ok(testt.parse().unwrap())
 }

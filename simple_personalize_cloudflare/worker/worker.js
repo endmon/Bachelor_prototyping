@@ -28,35 +28,21 @@ const headerNameDst = "Last-Modified"
  */
 async function handleRequest(request) {
 
-    const originalResponse = await fetch(request)
-
     const { test } = wasm_bindgen;
     await wasm_bindgen(wasm)
     const greeting = test(request)
-    let response = new Response(originalResponse.body, {    status: 200,    statusText: "some message",    headers: originalResponse.headers,  })
+    let response = new Response("originalResponse.body", {statusText: "some message", })
 
-    const originalBody = await originalResponse
-    const body = JSON.stringify({ foo: "bar", ...originalBody })
-    response = new Response(body, response)
 
     response.headers.set("foo", "bar")
     let msg = ""
     if ( getCookie(request, "visite") == false){
         msg = "C'est votre première visite"
         response.headers.set("Set-Cookie", "visite=true")
-    }
-
-    const src = response.headers.get(headerNameSrc)
-
-    if (src != null) {
-        response.headers.set(headerNameDst, src)
-        console.log(
-            `Response header "${headerNameDst}" was set to "${response.headers.get(
-                headerNameDst,
-            )}"`, msg,
-        )
+    } else {
+        msg = "Bon retour!"
     }
 
     //return new Response(JSON.stringify(greeting), {status: 200})
-    return response
+    return new Response(msg, response)
 }
