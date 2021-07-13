@@ -71,9 +71,23 @@ pub async fn test(request:Request) -> Result<String, JsValue> {
         result = fetch;
     }*/
 
+    let mut total:i32 = 0;
+
     match url.path.as_str() {
         "/wiki" => result = fetch_rust_wasm(
             "https://www.mediawiki.org/w/api.php?action=help").await.unwrap(),
+
+        "/addition" => if url.query.is_some() {
+            let query = url.get_parsed_query().unwrap();
+            for (k,v) in query {
+                total += v[0].parse::<i32>().unwrap();
+            }
+            result = total.to_string();
+        },
+
+       /* "/user" => if request.method() == "POST" {
+
+        }*/
 
         _ => result = "".to_string(),
     }
