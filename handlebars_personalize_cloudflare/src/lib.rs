@@ -2,6 +2,7 @@ extern crate js_sys;
 
 use cfg_if::cfg_if;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
+use serde_json::json;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen::JsValue;
@@ -57,19 +58,55 @@ async fn fetch_rust_wasm(url:&str) -> Result<String, JsValue> {
     Ok(responce_string)
 }
 
+#[derive(Serialize)]
+
+
 #[wasm_bindgen]
-pub fn main() -> String{
+pub fn main(data:String) -> String{
     // create the handlebars registry
     let mut handlebars = Handlebars::new();
 
+    //let test1;
+    //let value: serde_json::Value = serde_wasm_bindgen::from_value(data).unwrap();
+
+    let value:serde_json::Value = serde_json::from_str(data.as_str()).unwrap();
+
+
+
     // register the template. The template string will be verified and compiled.
-    let source = "hello {{world}}";
-    assert!(handlebars.register_template_string("t1", source).is_ok());
+    //let source = "hello {{world}}";
+    let source2 = "<h1>Handlebars JS Example</h1>
+        <table>
+        <thead>
+        <th>Name</th>
+        <th>Job Title</th>
+        <th>Twitter</th>
+        </thead>
+        <tbody>
+        {{#users}}
+        <tr>
+        <td>{{fullName person}}</td>
+        <td>{{jobTitle}}</td>
+        <td><a href='https://twitter.com/{{twitter}}'>@{{twitter}}</a></td>
+        </tr>
+        {{/users}}
+        </tbody>
+        </table>";
+    //assert!(handlebars.register_template_string("t1", source).is_ok());
 
     // Prepare some data.
     //
     // The data type should implements `serde::Serialize`
-    let mut data = BTreeMap::new();
-    data.insert("world".to_string(), "世界!".to_string());
-    handlebars.render("t1", &data).unwrap()
+    //let mut data = BTreeMap::new();
+    //data.insert("world".to_string(), "世界!".to_string());
+
+
+
+    handlebars.register_template_string("hello", source2); //bind le template source2 avec le nom "hello"
+    handlebars.render("hello", &value).unwrap() //render le template nommer "hello" avec l'objet test1
+
+
+    //data.as_string().unwrap()
+    //data.to_string()
+    //value.to_string()
 }
