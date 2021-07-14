@@ -1,15 +1,18 @@
 extern crate js_sys;
 
 use cfg_if::cfg_if;
-use serde::{Deserialize, Serialize};
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
+use wasm_bindgen::JsValue;
 use wasm_bindgen_futures::JsFuture;
+use serde_json::Value;
 use web_sys::{Request, RequestInit, Response};
 use log::{info, Level};
-use js_sys::JsString;
+use js_sys::{global, Function, Object, Promise, Reflect, JsString};
 use urlparse::urlparse;
 use urlparse::GetQuery;  // Trait
+use worker_kv::*;
 
 mod utils;
 
@@ -54,6 +57,8 @@ async fn fetch_rust_wasm(url:&str) -> Result<String, JsValue> {
 
 #[wasm_bindgen]
 pub async fn test(request:Request) -> Result<String, JsValue> {
+
+
     let met = request.method();
     let url = urlparse(request.url()); //retourne un string de type https://example.com/example
 
@@ -72,24 +77,47 @@ pub async fn test(request:Request) -> Result<String, JsValue> {
     }*/
 
     let mut total:i32 = 0;
+    let kv = KvStore::create("user_KV").unwrap();
 
-    match url.path.as_str() {
-        "/wiki" => result = fetch_rust_wasm(
-            "https://www.mediawiki.org/w/api.php?action=help").await.unwrap(),
+    match request.method().as_str() {
+        "GET" =>
+            match url.path.as_str() {
+                "/wiki" => result = fetch_rust_wasm(
+                    "https://www.mediawiki.org/w/api.php?action=help").await.unwrap(),
 
-        "/addition" => if url.query.is_some() {
-            let query = url.get_parsed_query().unwrap();
-            for (k,v) in query {
-                total += v[0].parse::<i32>().unwrap();
-            }
-            result = total.to_string();
-        },
+                "/addition" => if url.query.is_some() {
+                    let query = url.get_parsed_query().unwrap();
+                    for (k,v) in query {
+                        total += v[0].parse::<i32>().unwrap();
+                    }
+                    result = total.to_string();
+                },
 
-       /* "/user" => if request.method() == "POST" {
+                "/user" => if request.method() == "GET" {
+                    let query = url.get_parsed_query().unwrap();
 
-        }*/
+                    let gett = kv.get(query.get_first_from_str("name").unwrap().as_str()).await.unwrap();
+                    result = gett.unwrap().as_string();
+                },
 
-        _ => result = "".to_string(),
+                _ => result = "_GET".to_string(),
+            },
+        "POST" =>
+            match url.path.as_str() {
+                "/user" => if request.method() == "POST" {
+                    //let window = web_sys::window().unwrap();
+                    //let document = window.document().unwrap();
+                    //let body = document.body().unwrap().inner_text();
+                    //result = result_js.as_string().unwrap();
+                    kv.put("Test", "121").unwrap().execute().await.unwrap();
+                    result = "Passé par la".to_string();
+                    //result = body;
+
+                },
+
+                _ => result = "_POST".to_string(),
+            },
+        _ => result = "__".to_string(),
     }
 
 

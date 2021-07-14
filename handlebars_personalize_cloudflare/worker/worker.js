@@ -9,9 +9,9 @@ addEventListener('fetch', event => {
  */
 async function handleRequest(request) {
 
-    const { test } = wasm_bindgen;
+    const { main } = wasm_bindgen;
     await wasm_bindgen(wasm)
-    const greeting = await test(request)
+    const greeting = await main()
 
     //let value = await user_KV.put("M. Test", 383);
     //let val = await user_KV.get("M. Test");

@@ -1,5 +1,5 @@
 [package]
-name = "url_personalize_cloudflare"
+name = "handlebars_personalize_cloudflare"
 version = "0.1.0"
 resolver = "2"
 authors = ["Miguel Gouveia <miguel.lopesgouveia@heig-vd.ch>"]
@@ -16,6 +16,7 @@ cfg-if = "0.1.2"
 wasm-bindgen = { version = "0.2.74", features = ["serde-serialize"] }
 urlparse = "0.7.3"
 worker-kv = "0.2.0"
+handlebars = "4.1.0"
 
 # The `console_error_panic_hook` crate provides better debugging of panics by
 # logging them with `console.error`. This is great for development, but requires
