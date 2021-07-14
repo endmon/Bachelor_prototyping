@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+
+    {{!-- Basic meta - advanced meta is output with {ghost_head} below --}}
+    <title>Handlebars</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    {{!-- Theme assets - use the {asset} helper to reference styles & scripts,
+    this will take care of caching and cache-busting automatically --}}
+    <link rel="stylesheet" type="text/css" href="built/screen.css"" />
+
+</head>
+<body class="home-template">
+<div class="viewport">
+
+    <header id="gh-head" class="gh-head has-cover">
+        <nav class="gh-head-inner inner gh-container">
+
+            <div class="gh-head-brand">
+                <a class="gh-head-logo" href="http://api.miguel-gouveia.me/">
+                    Test handler
+                </a>
+                <a class="gh-burger" role="button">
+                    <div class="gh-burger-box">
+                        <div class="gh-burger-inner"></div>
+                    </div>
+                </a>
+            </div>
+            <div class="gh-head-menu">
+                <ul class="nav">
+                    <li class="nav-home nav-current"><a href="http://localhost:2368/">Home</a></li>
+                    <li class="nav-about"><a href="http://localhost:2368/about/">About</a></li>
+                    <li class="nav-collection"><a href="http://localhost:2368/tag/getting-started/">Collection</a></li>
+                    <li class="nav-author"><a href="http://localhost:2368/author/ghost/">Author</a></li>
+                    <li class="nav-portal"><a href="http://localhost:2368/portal/">Portal</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="site-header-content">
+                <img class="site-header-cover"
+                    srcset="https://static.ghost.org/v4.0.0/images/publication-cover.jpg 300w,
+                            https://static.ghost.org/v4.0.0/images/publication-cover.jpg 600w,
+                            https://static.ghost.org/v4.0.0/images/publication-cover.jpg 1000w,
+                            https://static.ghost.org/v4.0.0/images/publication-cover.jpg 2000w"
+                    sizes="100vw"
+                    src="https://static.ghost.org/v4.0.0/images/publication-cover.jpg"
+                    alt=""
+                />
+
+            <h1 class="site-title">
+                Test handler
+            </h1>
+            <p>Test de templating</p>
+        </div>
+        
+        {{!-- The main content area --}}
+        <main id="site-main" class="site-main outer">
+            <div class="inner posts">
+        
+                <div class="post-feed">
+                    {{#each posts}}
+        
+                        {{!-- <article class="post-card {{post_class}} {{#is "home"}}{{#if feature_image}}{{#has index="0"}}post-card-large{{/has}}{{/if}}{{/is}}"> --}}
+                        <article class="post-card post tag-getting-started">
+        
+                            {{#if feature_image}}
+                            <a class="post-card-image-link" href="{{slug}}">
+                                {{!-- This is a responsive image, it loads different sizes depending on device
+                                https://medium.freecodecamp.org/a-guide-to-responsive-images-with-ready-to-use-templates-c400bd65c433 --}}
+                                <img class="post-card-image"
+                                    srcset="{{ feature_image }} 300w,
+                                            {{ feature_image }} 600w,
+                                            {{ feature_image }} 1000w,
+                                            {{ feature_image }} 2000w"
+                                    sizes="(max-width: 1000px) 400px, 800px"
+                                    src="{{feature_image}}"
+                                    alt="{{title}}"
+                                    loading="lazy"
+                                />
+                            </a>
+                            {{/if}}
+        
+                            <div class="post-card-content">
+        
+                                <a class="post-card-content-link" href="{{slug}}">
+                                    <header class="post-card-header">
+                                            <div class="post-card-primary-tag">GETTING STARTED</div>
+                                        <h2 class="post-card-title">{{title}}</h2>
+                                    </header>
+                                    <section class="post-card-excerpt">
+                                        <p>{{custom_excerpt}}</p>
+                                    </section>
+                                </a>
+        
+                                <footer class="post-card-meta">
+                                    <ul class="author-list">
+                                        <li class="author-list-item">
+                                            <a href="/author/ghost/" class="static-avatar">
+                                                <img class="author-profile-image" src="https://static.ghost.org/v4.0.0/images/ghost-user.png" alt="Ghost" />
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <div class="post-card-byline-content">
+                                        <span><a href="/author/ghost/">Ghost</a></span>
+                                        <span class="post-card-byline-date"><time datetime="{{created_at}}"></time> <span class="bull">&bull;</span> 2 min read</span>
+                                    </div>
+                                </footer>
+        
+                            </div>
+        
+                        </article>
+        
+                    {{/each}}
+                </div>
+        
+            </div>
+        </main>
+    </main>
+
+    {{!-- The global footer at the very bottom of the screen --}}
+    <footer class="site-footer outer">
+        <div class="inner">
+            <section class="copyright"><a href="http://miguel-gouveia.me">Test handler</a> &copy; 2021</section>
+
+            <div><a href="https://ghost.org/" target="_blank" rel="noopener">Powered by Ghost</a></div>
+        </div>
+    </footer>
+
+</div>
+
+</body>
+</html>

@@ -19,6 +19,7 @@ use handlebars::Handlebars;
 
 mod utils;
 
+
 cfg_if! {
     // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
     // allocator.
@@ -58,24 +59,23 @@ async fn fetch_rust_wasm(url:&str) -> Result<String, JsValue> {
     Ok(responce_string)
 }
 
-#[derive(Serialize)]
-
 
 #[wasm_bindgen]
 pub fn main(data:String) -> String{
     // create the handlebars registry
     let mut handlebars = Handlebars::new();
 
+
     //let test1;
     //let value: serde_json::Value = serde_wasm_bindgen::from_value(data).unwrap();
 
-    let value:serde_json::Value = serde_json::from_str(data.as_str()).unwrap();
+    //let value:serde_json::Value = serde_json::from_str(data.as_str()).unwrap();
 
 
 
     // register the template. The template string will be verified and compiled.
     //let source = "hello {{world}}";
-    let source2 = "<h1>Handlebars JS Example</h1>
+    /*let source2 = "<h1>Handlebars JS Example</h1>
         <table>
         <thead>
         <th>Name</th>
@@ -91,7 +91,7 @@ pub fn main(data:String) -> String{
         </tr>
         {{/users}}
         </tbody>
-        </table>";
+        </table>";*/
     //assert!(handlebars.register_template_string("t1", source).is_ok());
 
     // Prepare some data.
