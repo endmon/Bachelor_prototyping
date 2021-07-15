@@ -60,8 +60,43 @@ async fn fetch_rust_wasm(url:&str) -> Result<String, JsValue> {
 }
 
 
+
+
 #[wasm_bindgen]
-pub fn main(data:String) -> String{
+pub async fn main(data:String) -> String{
+
+    #[derive(Serialize, Deserialize)]
+    struct Posts {
+        posts: Vec<Post>,
+    }
+
+    #[derive(Serialize, Deserialize)]
+    struct Post {
+        canonical_url: String,
+        codeinjection_foot: String,
+        codeinjection_head: String,
+        comment_id: String,
+        created_at: String,
+        custom_excerpt: String,
+        custom_template: String,
+        email_recipient_filter: String,
+        feature_image: String,
+        featured: String,
+        html: String,
+        id: String,
+        locale: String,
+        mobiledoc: String,
+        plaintext: String,
+        published_at: String,
+        slug: String,
+        status: String,
+        title: String,
+        type_post: String,
+        updated_at: String,
+        uuid: String,
+        visibility: String,
+
+    }
     // create the handlebars registry
     let mut handlebars = Handlebars::new();
 
@@ -100,13 +135,18 @@ pub fn main(data:String) -> String{
     //let mut data = BTreeMap::new();
     //data.insert("world".to_string(), "世界!".to_string());
 
+    let source2 = fetch_rust_wasm("http://miguel-gouveia.me/index.hbs").await.unwrap();
+    let value = fetch_rust_wasm("http://miguel-gouveia.me/posts.json").await.unwrap();
+
+    let value_obj: Posts = serde_json::from_str(value.as_str()).unwrap();
 
 
     handlebars.register_template_string("hello", source2); //bind le template source2 avec le nom "hello"
-    handlebars.render("hello", &value).unwrap() //render le template nommer "hello" avec l'objet test1
+    handlebars.render("hello", &value_obj).unwrap() //render le template nommer "hello" avec l'objet test1
 
 
     //data.as_string().unwrap()
     //data.to_string()
     //value.to_string()
+
 }

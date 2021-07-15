@@ -42,6 +42,9 @@ async function handleRequest(request) {
     //let value = await user_KV.put("M. Test", 383);
     //let val = await user_KV.get("M. Test");
 
+
     //return new Response(JSON.stringify(greeting), {status: 200})
-    return new Response(greeting, {status: 200})
+    let newResponce = new Response(greeting, {status: 200})
+    newResponce.headers.set("Content-Type", "text/html")
+    return newResponce
 }
