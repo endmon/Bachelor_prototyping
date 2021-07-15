@@ -2,7 +2,7 @@ extern crate js_sys;
 
 use cfg_if::cfg_if;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
-use serde_json::json;
+use serde_json::{json, Number, Map};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen::JsValue;
@@ -65,7 +65,7 @@ async fn fetch_rust_wasm(url:&str) -> Result<String, JsValue> {
 #[wasm_bindgen]
 pub async fn main(data:String) -> String{
 
-    #[derive(Serialize, Deserialize)]
+    /*#[derive(Serialize, Deserialize)]
     struct Posts {
         posts: Vec<Post>,
     }
@@ -97,6 +97,18 @@ pub async fn main(data:String) -> String{
         visibility: String,
 
     }
+
+    #[derive(Serialize, Deserialize)]
+    enum Valuet {
+        Null,
+        Bool(bool),
+        Number(Number),
+        String(String),
+        Array(Vec<Value>),
+        Object(std::collections::HashMap<String, Valuet>),
+        //Object(Map<String, serde_json::Value>),
+    }*/
+
     // create the handlebars registry
     let mut handlebars = Handlebars::new();
 
@@ -135,14 +147,14 @@ pub async fn main(data:String) -> String{
     //let mut data = BTreeMap::new();
     //data.insert("world".to_string(), "世界!".to_string());
 
-    let source2 = fetch_rust_wasm("http://miguel-gouveia.me/index.hbs").await.unwrap();
-    let value = fetch_rust_wasm("http://miguel-gouveia.me/posts.json").await.unwrap();
+    let template = fetch_rust_wasm("http://miguel-gouveia.me/index.hbs").await.unwrap();
+    let json = fetch_rust_wasm("http://miguel-gouveia.me/posts.json").await.unwrap();
 
-    let value_obj: Posts = serde_json::from_str(value.as_str()).unwrap();
+    let json_obj: Value = serde_json::from_str(&json).unwrap();
 
 
-    handlebars.register_template_string("hello", source2); //bind le template source2 avec le nom "hello"
-    handlebars.render("hello", &value_obj).unwrap() //render le template nommer "hello" avec l'objet test1
+    handlebars.register_template_string("hello", template); //bind le template source2 avec le nom "hello"
+    handlebars.render("hello", &json_obj).unwrap() //render le template nommer "hello" avec l'objet test1
 
 
     //data.as_string().unwrap()
