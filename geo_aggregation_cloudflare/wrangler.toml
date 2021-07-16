@@ -1,0 +1,11 @@
+name = "geo_aggregation_cloudflare"
+type = "rust"
+
+account_id = "a9b62e3846b89730c73258f9753382b5"
+workers_dev = true
+target_type = "rust"
+
+[env.production]
+route = "geo.miguel-gouveia.me"
+zone_id = "b0324acad976fa597a32a1326ce09e18"
+

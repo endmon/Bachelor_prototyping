@@ -144,7 +144,7 @@ pub async fn main(request:Request) -> String {
 
     } else {
         target_template = "http://miguel-gouveia.me/template/error-404.hbs".to_string();
-        
+
         let error = format!("{{ \"error-message\": \"Le fichier {} n'est pas présent!\" }}", target_json);
         json_obj = serde_json::from_str(&error).unwrap();
     }
