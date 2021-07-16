@@ -2,7 +2,7 @@ extern crate js_sys;
 
 use cfg_if::cfg_if;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
-use serde_json::{json, Number, Map};
+use serde_json::{json, Number, Map, Error};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen::JsValue;
@@ -72,8 +72,11 @@ pub async fn main(request:Request) -> String {
 
     let mut result = "".to_string();
     let mut json = "".to_string();
+    let mut json_obj:Value;
     let mut template = "".to_string();
+    let mut target_template= "".to_string();
     let mut template_name = "default".to_string();
+
 
 
     if url.query.is_some() {
@@ -81,7 +84,7 @@ pub async fn main(request:Request) -> String {
         //traité query
     }
 
-    if url.path != "/" { //path is_empty() ne marche pas, vu qu'il y a toujours un /
+    /*if url.path != "/" { //path is_empty() ne marche pas, vu qu'il y a toujours un /
         let mut v: Vec<&str> = url.path.rsplit(".").collect();
 
         let target_json = format!("{}/content{}.json", site, v.pop().unwrap());
@@ -112,7 +115,45 @@ pub async fn main(request:Request) -> String {
             result = handlebars.render("hello", &json_obj).unwrap() //render le template nommer "hello" avec l'objet test1
         }
 
+    }*/
+
+    let mut v: Vec<&str> = url.path.rsplit(".").collect();
+
+    let target_json = format!("{}/content{}.json", site, v.pop().unwrap());
+
+    json = fetch_rust_wasm(&target_json).await.unwrap();
+
+
+    //on deserialize le JSON
+    let json_obj_result: Result<Value, Error> = serde_json::from_str(&json);
+
+    if json_obj_result.is_ok() {
+        json_obj= json_obj_result.unwrap();
+        let mut template_directory = "".to_string();
+
+        //on check le ressourceType
+        if json_obj.get("ressourceType").is_some() {
+            template_directory = format!("{}/",json_obj.get("ressourceType").unwrap().as_str().unwrap().to_string());
+        }
+
+        if !v.is_empty() {
+            template_name = v.pop().unwrap().to_string();
+        }
+        target_template = format!("{}/template/{}{}.hbs", site, template_directory, template_name);
+
+
+    } else {
+        target_template = "http://miguel-gouveia.me/template/error-404.hbs".to_string();
+        
+        let error = format!("{{ \"error-message\": \"Le fichier {} n'est pas présent!\" }}", target_json);
+        json_obj = serde_json::from_str(&error).unwrap();
     }
+
+    template = fetch_rust_wasm(&target_template).await.unwrap();
+
+    handlebars.register_template_string("hello", template); //bind le template source2 avec le nom "hello"
+    result = handlebars.render("hello", &json_obj).unwrap(); //render le template nommer "hello" avec l'objet test1
+
 
     result
 }
