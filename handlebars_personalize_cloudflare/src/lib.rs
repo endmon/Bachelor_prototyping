@@ -66,41 +66,53 @@ pub async fn main(request:Request) -> String {
     // create the handlebars registry
     let mut handlebars = Handlebars::new();
 
+    let site = "http://miguel-gouveia.me";
+
     let url = urlparse(request.url()); //retourne un string de type https://example.com/example
 
+    let mut result = "".to_string();
     let mut json = "".to_string();
     let mut template = "".to_string();
+    let mut template_name = "default".to_string();
 
-    let v:Vec<&str> = url.path.rsplit(".").collect();
 
     if url.query.is_some() {
         let query = url.get_parsed_query().unwrap();
         //traité query
     }
 
-    //[0] == html  [1] == template/index   [2] == content/post
-    match v[2] {
-        "/content/post" => json = fetch_rust_wasm(
-            "http://miguel-gouveia.me/content/posts.json").await.unwrap(),
+    if url.path != "/" { //path is_empty() ne marche pas, vu qu'il y a toujours un /
+        let mut v: Vec<&str> = url.path.rsplit(".").collect();
 
-        _ => json = "_GET".to_string(),
+        let target_json = format!("{}/content{}.json", site, v.pop().unwrap());
+
+        json = fetch_rust_wasm(&target_json).await.unwrap();
+        if json.starts_with("<") { //detect 404
+            result = json; //return 404
+        } else {
+            //on deserialize le JSON
+            let json_obj: Value = serde_json::from_str(&json).unwrap();
+
+            let mut template_directory = "".to_string();
+
+            //on check la template
+            if json_obj.get("ressourceType").is_some() {
+                template_directory = format!("{}/",json_obj.get("ressourceType").unwrap().as_str().unwrap().to_string());
+            }
+
+            if !v.is_empty() {
+                template_name = v.pop().unwrap().to_string();
+            }
+            let target_template = format!("{}/template/{}{}.hbs", site, template_directory, template_name);
+
+            template = fetch_rust_wasm(&target_template).await.unwrap();
+
+
+            handlebars.register_template_string("hello", template); //bind le template source2 avec le nom "hello"
+            result = handlebars.render("hello", &json_obj).unwrap() //render le template nommer "hello" avec l'objet test1
+        }
+
     }
 
-    match v[1] {
-        "/template/index" => template = fetch_rust_wasm(
-            "http://miguel-gouveia.me/template/index.hbs").await.unwrap(),
-
-        _ => template = "_GET".to_string(),
-    }
-
-    /*
-    let template = fetch_rust_wasm("http://miguel-gouveia.me/template/index.hbs").await.unwrap();
-    let json = fetch_rust_wasm("http://miguel-gouveia.me/content/posts.json").await.unwrap();*/
-
-    let json_obj: Value = serde_json::from_str(&json).unwrap();
-
-
-    handlebars.register_template_string("hello", template); //bind le template source2 avec le nom "hello"
-    handlebars.render("hello", &json_obj).unwrap() //render le template nommer "hello" avec l'objet test1
-
+    result
 }
