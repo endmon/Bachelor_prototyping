@@ -1,6 +1,10 @@
 # Cloudflare aggregation simple use case
 
-This project is a simple case of aggregation for a Cloudflare workers. It will get 3 txt on a http server, concatenate them and return the result.
+This project is a simple case of aggregation for a Cloudflare worker. It will get 3 txt on a http server, concatenate them and return the result.
+
+## Demo
+
+You will find this Worker live on [miguel-gouveia.me/aggregation](http://miguel-gouveia.me/aggregation)
 
 ## Batteries Included
 
@@ -16,11 +20,11 @@ This project is a simple case of aggregation for a Cloudflare workers. It will g
 
 ### In order to run this Workers, you will need to have :
 
-1 Have a [Cloudflare Account](https://dash.cloudflare.com/sign-up/workers).
+1. #### Have a [Cloudflare Account](https://dash.cloudflare.com/sign-up/workers).
 
-2 Install Rust
+2. #### Install Rust
 
-3 Install wrangler (Cloudflare Workers CLI) with cargo
+3. #### Install wrangler (Cloudflare Workers CLI) with cargo
 
 ```
 cargo install wrangler
@@ -28,7 +32,7 @@ cargo install wrangler
 
 If you are on Windows, you will need to have Perl v5.10.0 or higher.
 
-4 configure wrangler with your Cloudflare account.
+4. #### Authenticates wrangler with your Cloudflare account.
 
 ```
 wrangler login
@@ -40,7 +44,22 @@ if wrangler login doesn't work, use:
 wrangler config
 ```
 
-5 Complete the wrangler.toml
+For more information on [authentication.](https://developers.cloudflare.com/workers/cli-wrangler/authentication)
+
+5. #### Complete the wrangler.toml
+
+```
+name = "your-worker"
+type = "rust"
+account_id = "your-account-id"
+# This field specifies that the Worker will be deployed to a *.workers.dev domain
+workers_dev = true
+
+# These fields specify that the Worker will deploy to a custom domain
+[env.production]
+route = "exemple.com"
+zone_id = "your-zone-id"
+```
 
 The account_id is necessary for use the preview.
 
@@ -49,8 +68,6 @@ It can be found with:
 ```
 wrangler whoami
 ```
-
-The [env.production] is for deploy at the Edge.
 
 route:  is where your Workers application will be served at.
 
@@ -77,7 +94,12 @@ Will build the project and deploy on localhost:8787
 Deploy:
 
 ```
+wrangler publish
+#publish your Worker to a *.workers.dev domain, if workers_dev is set
+OR
 wrangler publish --env production
+#publish your Worker to the domain you have defined in your wrangler.toml
 ```
 
-Will deploy the project on the domain you have defined in the wrangler.toml
+### Use
+

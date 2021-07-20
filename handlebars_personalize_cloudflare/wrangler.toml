@@ -6,6 +6,6 @@ workers_dev = true
 target_type = "rust"
 
 [env.production]
-route = "api.miguel-gouveia.me"
+route = "api.miguel-gouveia.me/*"
 zone_id = "b0324acad976fa597a32a1326ce09e18"
 
