@@ -7,7 +7,7 @@ use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{Request, RequestInit, Response};
 use log::{info, Level};
-use js_sys::JsString;
+use js_sys::{JsString, ArrayBuffer, Array};
 
 mod utils;
 
@@ -35,8 +35,40 @@ pub fn worker_global_scope() -> Option<web_sys::ServiceWorkerGlobalScope> {
     js_sys::global().dyn_into::<web_sys::ServiceWorkerGlobalScope>().ok()
 }
 
+pub fn fetch_wasm_binary(url:&str) -> Vec<u8> {
+    let mut opts = RequestInit::new();
+    opts.method("GET");
+    let request_a = Request::new_with_str_and_init(
+        url,
+        &opts
+    ).unwrap();
+    let global = worker_global_scope().unwrap();
+    let resp_value_a = JsFuture::from(global.fetch_with_request(&request_a)).await.unwrap();
+    let resp_a: Response = resp_value_a.dyn_into().unwrap();
+    let json_a = JsFuture::from(resp_a.array_buffer().unwrap()).await.unwrap();
+    let binary:js_sys::Uint8Array = js_sys::Uint8Array::new(&json_a);
+    let mut body = vec![0; binary.length() as usize];
+    binary.copy_to(&mut body[..]);
+}
+
 #[wasm_bindgen]
-pub async fn test() -> Result<String, JsValue> {
+pub async fn test(request:Request) -> Result<String, JsValue> {
+
+
+    /*let mut opts = RequestInit::new();
+    opts.method("GET");
+    let request_a = Request::new_with_str_and_init(
+        "http://miguel-gouveia.me/tiles/building/12/2155/1437.pbf",
+        &opts
+    ).unwrap();
+    let global = worker_global_scope().unwrap();
+    let resp_value_a = JsFuture::from(global.fetch_with_request(&request_a)).await.unwrap();
+    let resp_a: Response = resp_value_a.dyn_into().unwrap();
+    let json_a = JsFuture::from(resp_a.array_buffer().unwrap()).await.unwrap();
+    let binary:js_sys::Uint8Array = js_sys::Uint8Array::new(&json_a);
+    let mut body = vec![0; binary.length() as usize];
+    binary.copy_to(&mut body[..]);*/
+
     std::panic::set_hook(Box::new(console_error_panic_hook::hook));
     init_log();
 
@@ -58,10 +90,17 @@ pub async fn test() -> Result<String, JsValue> {
         &opts
     )?;
 
+
     let global = worker_global_scope().unwrap();
     let resp_value_a = JsFuture::from(global.fetch_with_request(&request_a)).await?;
     let resp_value_b = JsFuture::from(global.fetch_with_request(&request_b)).await?;
     let resp_value_c = JsFuture::from(global.fetch_with_request(&request_c)).await?;
+
+    //let resp_value_binary = JsFuture::from(global.fetch_with_request(&request_binary)).await?;
+    //let mut resp_binary:Response = resp_value_binary.dyn_into().unwrap();
+    //let mut jsvaluebinary = JsFuture::from(resp_binary.blob()?).await?;
+    //let mut binary:ArrayBuffer = jsvaluebinary.;
+
 
     assert!(resp_value_a.is_instance_of::<Response>());
     let resp_a: Response = resp_value_a.dyn_into().unwrap();
@@ -73,6 +112,9 @@ pub async fn test() -> Result<String, JsValue> {
     let json_b = JsFuture::from(resp_b.text()?).await?;
     let json_c = JsFuture::from(resp_c.text()?).await?;
 
-    let json_abc = format!("{}{}{}", json_a.as_string().unwrap(), json_b.as_string().unwrap(), json_c.as_string().unwrap());
+    let mut json_abc = format!("{}{}{}", json_a.as_string().unwrap(), json_b.as_string().unwrap(), json_c.as_string().unwrap());
+
     Ok(json_abc)
+
+
 }

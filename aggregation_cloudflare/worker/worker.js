@@ -10,9 +10,7 @@ async function handleRequest(request) {
 
     const { test } = wasm_bindgen;
     await wasm_bindgen(wasm)
-    const greeting = await test()
+    const greeting = await test(request)
 
-
-    //return new Response(JSON.stringify(greeting), {status: 200})
     return new Response(greeting, {status: 200})
 }

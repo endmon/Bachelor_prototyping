@@ -6,6 +6,6 @@ workers_dev = true
 target_type = "rust"
 
 [env.production]
-route = "geo.miguel-gouveia.me"
+route = "miguel-gouveia.me/geo/*"
 zone_id = "b0324acad976fa597a32a1326ce09e18"
 

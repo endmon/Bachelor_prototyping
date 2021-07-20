@@ -9,10 +9,9 @@ use wasm_bindgen_futures::JsFuture;
 use serde_json::Value;
 use web_sys::{Request, RequestInit, Response, Blob, FileReaderSync};
 use log::{info, Level};
-use js_sys::{global, Function, Object, Promise, Reflect, JsString};
+use js_sys::{global, Function, Object, Promise, Reflect, JsString, Array};
 use urlparse::urlparse;
 use urlparse::GetQuery;  // Trait
-use worker_kv::*;
 use std::fmt::Binary;
 use wasm_bindgen::__rt::std::convert::TryInto;
 
@@ -38,6 +37,23 @@ cfg_if! {
     }
 }
 
+pub async fn fetch_wasm_binary(url:&str) -> Vec<u8> {
+    let mut opts = RequestInit::new();
+    opts.method("GET");
+    let request_a = Request::new_with_str_and_init(
+        url,
+        &opts
+    ).unwrap();
+    let global = worker_global_scope().unwrap();
+    let resp_value_a = JsFuture::from(global.fetch_with_request(&request_a)).await.unwrap();
+    let resp_a: Response = resp_value_a.dyn_into().unwrap();
+    let json_a = JsFuture::from(resp_a.array_buffer().unwrap()).await.unwrap();
+    let binary:js_sys::Uint8Array = js_sys::Uint8Array::new(&json_a);
+    let mut body = vec![0; binary.length() as usize];
+    binary.copy_to(&mut body[..]);
+    body
+}
+
 pub fn worker_global_scope() -> Option<web_sys::ServiceWorkerGlobalScope> {
     js_sys::global().dyn_into::<web_sys::ServiceWorkerGlobalScope>().ok()
 }
@@ -57,7 +73,7 @@ async fn fetch_rust_wasm(url:&str) -> Result<String, JsValue> {
     Ok(responce_string)
 }
 
-async fn fetch_rust_wasm_binary(url:&str) -> Result<String, JsValue> {
+/*async fn fetch_rust_wasm_binary(url:&str) -> Result<String, JsValue> {
     let mut opts = RequestInit::new();
     opts.method("GET");
 
@@ -80,29 +96,34 @@ async fn fetch_rust_wasm_binary(url:&str) -> Result<String, JsValue> {
     //let responce_string = responce_json.as_string().unwrap();
 
     Ok(reps.to_string())
-}
+}*/
 
 #[wasm_bindgen]
-pub async fn test(request:Request) -> Result<String, JsValue> {
+pub async fn test(request:Request) -> Array {
 
-    //let url = urlparse(request.url()); //retourne un string de type https://example.com/example
+    let url = urlparse(request.url()); //retourne un string de type https://example.com/example
 
-    let mut result = "".to_string();
-    //let mut v: Vec<&str> = url.path.rsplit("/").collect();
 
-    //v.pop();
-    //let mut layers = v.pop().unwrap();
+    let mut v: Vec<&str> = url.path.rsplit("/").collect();
 
-    //let mut vector_layers:Vec<&str> = layers.rsplit("+").collect();
+    v.pop(); //pop root /
+    v.pop(); //pop /geo
+    let mut layers = v.pop().unwrap();
 
-    //result = fetch_rust_wasm_binary("http://miguel-gouveia.me/a").await.unwrap();
+    let mut vector_layers:Vec<&str> = layers.rsplit("+").collect();
+    let z = v.pop().unwrap();
+    let y = v.pop().unwrap();
+    let x = v.pop().unwrap(); //{x.pbf}
+
 
     //let mut file:Binary;
+    let mut file:Vec<u8> = Vec::new();
+    let mut layer_string:String = "".to_string();
 
-    /*for layer in vector_layers {
-        file += got fetch binarie
-    }*/
+    for layer in vector_layers {
+        let mut pbf = fetch_wasm_binary(format!("http://miguel-gouveia.me/tiles/{}/{}/{}/{}", layer, z, y, x).as_str()).await;
+        file.append(&mut pbf);
+    }
 
-
-    Ok(result)
+    file.into_iter().map(JsValue::from).collect()
 }

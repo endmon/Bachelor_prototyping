@@ -74,6 +74,11 @@ async function handleRequest(request) {
     //const results_b = await gatherResponse(response_b)
     //const results_c = await gatherResponse(response_c)
     //aggrega = results_a + results_b + results_c
+
+    //var binary = fetch('miguel-gouveia.me/tiles/building/12/2155/1437.pbf').then
+    //let binary = await (await (await fetch('http://miguel-gouveia.me/tiles/building/12/2155/1437.pbf')).blob()).arrayBuffer()
+    //let data = new Uint8Array(binary)
+
     let response = await fetch(request);
 
 
