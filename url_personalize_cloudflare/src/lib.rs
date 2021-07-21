@@ -69,12 +69,6 @@ pub async fn test(request:Request) -> Result<String, JsValue> {
         //traité query
     }
 
-    /*if url.path == "/wiki" {
-        let fetch = fetch_rust_wasm(
-            "https://www.mediawiki.org/w/api.php?action=help").await.unwrap();
-
-        result = fetch;
-    }*/
 
     let mut total:i32 = 0;
     let kv = KvStore::create("user_KV").unwrap();
@@ -82,8 +76,8 @@ pub async fn test(request:Request) -> Result<String, JsValue> {
     match request.method().as_str() {
         "GET" =>
             match url.path.as_str() {
-                "/wiki" => result = fetch_rust_wasm(
-                    "https://www.mediawiki.org/w/api.php?action=help").await.unwrap(),
+                //"/wiki" => result = fetch_rust_wasm(
+                  //  "https://www.mediawiki.org/w/api.php?action=help").await.unwrap(),
 
                 "/addition" => if url.query.is_some() {
                     let query = url.get_parsed_query().unwrap();
@@ -105,13 +99,9 @@ pub async fn test(request:Request) -> Result<String, JsValue> {
         "POST" =>
             match url.path.as_str() {
                 "/user" => if request.method() == "POST" {
-                    //let window = web_sys::window().unwrap();
-                    //let document = window.document().unwrap();
-                    //let body = document.body().unwrap().inner_text();
-                    //result = result_js.as_string().unwrap();
+
                     kv.put("Test", "121").unwrap().execute().await.unwrap();
-                    result = "Passé par la".to_string();
-                    //result = body;
+                    result = "Test mis dans le kv".to_string();
 
                 },
 

@@ -57,3 +57,11 @@ Ici, le chemin correspond à un dossier disponible sur le cloud contenant des fi
 Une requête sur le dossier `/path/`avec les paramêtres `concatenation=a+b+c` doit permettre de concactener le contenu des fichiers textes `a`, `b` et `c` stockés dans ce dossier.
 
 Par exemple, si chacun des fichiers a son nom pour contenu, la requête GET décrite ci-dessus devrait retourner une réponse contenant la chaine de caractère `abc`.
+
+
+
+A template for kick starting a Cloudflare worker project using
+[`wasm-pack`](https://github.com/rustwasm/wasm-pack).
+
+This template is designed for compiling Rust libraries into WebAssembly and
+publishing the resulting worker to Cloudflare's worker infrastructure.

@@ -9,6 +9,6 @@ kv_namespaces = [
 ]
 
 [env.production]
-route = "api.miguel-gouveia.me"
+route = "miguel-gouveia.me/url*"
 zone_id = "b0324acad976fa597a32a1326ce09e18"
 

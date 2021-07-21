@@ -2,6 +2,10 @@
 
 This project is a simple personalize case for a Cloudflare workers. It will check if a cookie is existing, if not it will return a Set-Cookie header in the response for set the cookie. The body of the response is a string with a message depending on whether the cookie is present or not.
 
+## Demo
+
+You will find this Worker live on [miguel-gouveia.me/cookie](http://miguel-gouveia.me/cookie)
+
 ## Batteries Included
 
 * [`wasm-bindgen`](https://github.com/rustwasm/wasm-bindgen) for communicating
@@ -11,16 +15,18 @@ This project is a simple personalize case for a Cloudflare workers. It will chec
 * [`wee_alloc`](https://github.com/rustwasm/wee_alloc), an allocator optimized
   for small code size.
 * [`web-sys`](https://rustwasm.github.io/wasm-bindgen/web-sys/index.html) provide imports for Web's API (here it will be for fetch)
+* [`js-sys`](https://rustwasm.github.io/wasm-bindgen/contributing/js-sys/index.html) provide bindings for API JavaScript.
+* [`serde`](https://github.com/serde-rs/serde) for serializing and deserializing.
 
 ## Installation
 
 ### In order to run this Workers, you will need to have :
 
-1 Have a [Cloudflare Account](https://dash.cloudflare.com/sign-up/workers).
+1. #### Have a [Cloudflare Account](https://dash.cloudflare.com/sign-up/workers).
 
-2 Install Rust
+2. #### Install Rust
 
-3 Install wrangler (Cloudflare Workers CLI) with cargo
+3. #### Install wrangler (Cloudflare Workers CLI) with cargo
 
 ```
 cargo install wrangler
@@ -28,7 +34,7 @@ cargo install wrangler
 
 If you are on Windows, you will need to have Perl v5.10.0 or higher.
 
-4 configure wrangler with your Cloudflare account.
+4. #### Authenticates wrangler with your Cloudflare account.
 
 ```
 wrangler login
@@ -40,7 +46,22 @@ if wrangler login doesn't work, use:
 wrangler config
 ```
 
-5 Complete the wrangler.toml
+For more information on [authentication.](https://developers.cloudflare.com/workers/cli-wrangler/authentication)
+
+5. #### Complete the wrangler.toml
+
+```toml
+name = "your-worker"
+type = "rust"
+account_id = "your-account-id"
+# This field specifies that the Worker will be deployed to a *.workers.dev domain
+workers_dev = true
+
+# These fields specify that the Worker will deploy to a custom domain
+[env.production]
+route = "exemple.com"
+zone_id = "your-zone-id"
+```
 
 The account_id is necessary for use the preview.
 
@@ -50,7 +71,7 @@ It can be found with:
 wrangler whoami
 ```
 
-The [env.production] is for deploy at the Edge.
+
 
 route:  is where your Workers application will be served at.
 
@@ -76,14 +97,10 @@ Will build the project and deploy on localhost:8787
 
 Deploy:
 
-```
+```bash
+wrangler publish
+#publish your Worker to a *.workers.dev domain, if workers_dev is set
+OR
 wrangler publish --env production
+#publish your Worker to the domain you have defined in your wrangler.toml
 ```
-
-Will deploy the project on the domain you have defined in the wrangler.toml
-
-A template for kick starting a Cloudflare worker project using
-[`wasm-pack`](https://github.com/rustwasm/wasm-pack).
-
-This template is designed for compiling Rust libraries into WebAssembly and
-publishing the resulting worker to Cloudflare's worker infrastructure.

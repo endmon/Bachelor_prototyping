@@ -43,6 +43,7 @@ features = [
     'RequestInit',
     'Response',
     'ServiceWorkerGlobalScope',
+    'ResponseInit',
 ]
 
 [dev-dependencies]

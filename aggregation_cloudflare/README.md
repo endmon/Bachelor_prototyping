@@ -15,6 +15,8 @@ You will find this Worker live on [miguel-gouveia.me/aggregation](http://miguel-
 * [`wee_alloc`](https://github.com/rustwasm/wee_alloc), an allocator optimized
   for small code size.
 * [`web-sys`](https://rustwasm.github.io/wasm-bindgen/web-sys/index.html) provide imports for Web's API (here it will be for fetch)
+* [`js-sys`](https://rustwasm.github.io/wasm-bindgen/contributing/js-sys/index.html) provide bindings for API JavaScript.
+* [`serde`](https://github.com/serde-rs/serde) for serializing and deserializing.
 
 ## Installation
 
@@ -26,7 +28,7 @@ You will find this Worker live on [miguel-gouveia.me/aggregation](http://miguel-
 
 3. #### Install wrangler (Cloudflare Workers CLI) with cargo
 
-```
+```bash
 cargo install wrangler
 ```
 
@@ -34,13 +36,13 @@ If you are on Windows, you will need to have Perl v5.10.0 or higher.
 
 4. #### Authenticates wrangler with your Cloudflare account.
 
-```
+```bash
 wrangler login
 ```
 
 if wrangler login doesn't work, use:
 
-```
+```bash
 wrangler config
 ```
 
@@ -48,7 +50,7 @@ For more information on [authentication.](https://developers.cloudflare.com/work
 
 5. #### Complete the wrangler.toml
 
-```
+```toml
 name = "your-worker"
 type = "rust"
 account_id = "your-account-id"
@@ -68,6 +70,8 @@ It can be found with:
 ```
 wrangler whoami
 ```
+
+
 
 route:  is where your Workers application will be served at.
 
@@ -93,7 +97,7 @@ Will build the project and deploy on localhost:8787
 
 Deploy:
 
-```
+```bash
 wrangler publish
 #publish your Worker to a *.workers.dev domain, if workers_dev is set
 OR
@@ -103,3 +107,4 @@ wrangler publish --env production
 
 ### Use
 
+To modify the file to aggregate, should change the variable link1,link2,link3 in src/lib.r.

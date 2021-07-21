@@ -7,7 +7,7 @@ use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{Request, RequestInit, Response};
 use log::{info, Level};
-use js_sys::{JsString, ArrayBuffer, Array};
+use js_sys::JsString;
 
 mod utils;
 
@@ -38,46 +38,50 @@ pub fn worker_global_scope() -> Option<web_sys::ServiceWorkerGlobalScope> {
 #[wasm_bindgen]
 pub async fn test(request:Request) -> Result<String, JsValue> {
 
+    let link1 = "http://miguel-gouveia.me/a";
+    let link2 = "http://miguel-gouveia.me/b";
+    let link3 = "http://miguel-gouveia.me/c";
+
     std::panic::set_hook(Box::new(console_error_panic_hook::hook));
     init_log();
 
     let mut opts = RequestInit::new();
     opts.method("GET");
 
-    let request_a = Request::new_with_str_and_init(
-        "http://miguel-gouveia.me/a",
+    let request_1 = Request::new_with_str_and_init(
+        link1,
         &opts
     )?;
 
-    let request_b = Request::new_with_str_and_init(
-        "http://miguel-gouveia.me/b",
+    let request_2 = Request::new_with_str_and_init(
+        link2,
         &opts
     )?;
 
-    let request_c = Request::new_with_str_and_init(
-        "http://miguel-gouveia.me/c",
+    let request_3 = Request::new_with_str_and_init(
+        link3,
         &opts
     )?;
 
 
     let global = worker_global_scope().unwrap();
-    let resp_value_a = JsFuture::from(global.fetch_with_request(&request_a)).await?;
-    let resp_value_b = JsFuture::from(global.fetch_with_request(&request_b)).await?;
-    let resp_value_c = JsFuture::from(global.fetch_with_request(&request_c)).await?;
+    let resp_value_1 = JsFuture::from(global.fetch_with_request(&request_1)).await?;
+    let resp_value_2 = JsFuture::from(global.fetch_with_request(&request_2)).await?;
+    let resp_value_3 = JsFuture::from(global.fetch_with_request(&request_3)).await?;
 
 
-    assert!(resp_value_a.is_instance_of::<Response>());
-    let resp_a: Response = resp_value_a.dyn_into().unwrap();
-    let resp_b: Response = resp_value_b.dyn_into().unwrap();
-    let resp_c: Response = resp_value_c.dyn_into().unwrap();
+    assert!(resp_value_1.is_instance_of::<Response>());
+    let resp_1: Response = resp_value_1.dyn_into().unwrap();
+    let resp_2: Response = resp_value_2.dyn_into().unwrap();
+    let resp_3: Response = resp_value_3.dyn_into().unwrap();
 
 
-    let json_a = JsFuture::from(resp_a.text()?).await?;
-    let json_b = JsFuture::from(resp_b.text()?).await?;
-    let json_c = JsFuture::from(resp_c.text()?).await?;
+    let text_1 = JsFuture::from(resp_1.text()?).await?;
+    let text_2 = JsFuture::from(resp_2.text()?).await?;
+    let text_3 = JsFuture::from(resp_3.text()?).await?;
 
-    let mut json_abc = format!("{}{}{}", json_a.as_string().unwrap(), json_b.as_string().unwrap(), json_c.as_string().unwrap());
+    let mut text_123 = format!("{}{}{}", text_1.as_string().unwrap(), text_2.as_string().unwrap(), text_3.as_string().unwrap());
 
-    Ok(json_abc)
+    Ok(text_123)
 
 }
