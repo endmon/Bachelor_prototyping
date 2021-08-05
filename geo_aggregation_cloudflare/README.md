@@ -1,6 +1,6 @@
 # Cloudflare web mapping aggregation
 
-/TODO
+This project will fetch layer(s), add then and return a .pbf file for the coordinate chosen.
 
 ## Demo
 
@@ -107,7 +107,3 @@ OR
 wrangler publish --env production
 #publish your Worker to the domain you have defined in your wrangler.toml
 ```
-
-### Use
-
-/TODO

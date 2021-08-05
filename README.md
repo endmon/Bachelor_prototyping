@@ -1,67 +1,28 @@
-# Bachelor_prototyping
-Web Content Rendering at the Edge
+# Web Content Rendering at the Edge
 
-Edge platform: fastly
-Programming language: rust
-Runtime: webassembly
-CLI: https://developer.fastly.com/reference/cli/
-Starter: https://developer.fastly.com/solutions/starters/compute-starter-kit-rust-default/
-Deployment: https://developer.fastly.com/learning/compute/rust/
 
-## TODO:
+This repository contains several prototype projects. 
 
-* [X] Acheter un nom de domaine
-* [X] Limite de budget cloud CHF 200.-
-* [X] Configurer le CLI fastly en local
-* [X] Créer un service de test
-* [X] Partager les accès à ce service
-* [X] Installer un environnement de développement rust
-* [X] Installer le plugin rust IntelliJ (license education avec email heig-vd)
-* [ ] Déployer le rust starter kit
-* [ ] Adapter le rust starter kit au scenario d'aggrégation de contenu.
+They were carried out to test edge computing (tools, providers, possibility, etc. ) as part of my Bachelor thesis.
 
-Cloudflare
-* [X] Acheter un nom de domaine
-* [X] Limite de budget cloud CHF 200.-
-* [X] Configurer le CLI Cloudflare en local
-* [X] Créer un service de test
-* [x] Partager les accès à ce service
-* [X] Installer un environnement de développement rust
-* [X] Installer le plugin rust IntelliJ (license education avec email heig-vd)
-* [X] Déployer le rust starter kit
-* [x] Adapter le rust starter kit au scenario d'aggrégation de contenu.
+Details of each project can be found in the README in each subfolder.
 
-## Content aggregation
+Each sub-folder is an independent project that can be deployed at the edge.
 
-L'abstraction fournie par Fastly pour les requêtes et les Réponses HTTP est la suivante:
+For Fastly:
 
-```
-Request -> Result
-```
+[Aggregation](Aggregation/)
 
-En partant d'une requête HTTP contenant un chemin (`/path`) et des paramètres GET (`?content=a+b+c`) telle que décrite ci-dessous, l'objectif est de créer une programme de concatenation simple.
+For Cloudflare:
 
-```
-GET /path/?concatenation=a+b+c
-```
+[aggregation_cloudflare](/aggregation_cloudflare)
 
-Ici, le chemin correspond à un dossier disponible sur le cloud contenant des fichiers textes.
+[simple_personalize_cloudflare](/simple_personalize_cloudflare)
 
-```
-/path/
-/path/a
-/path/b
-/path/c
-```
-
-Une requête sur le dossier `/path/`avec les paramêtres `concatenation=a+b+c` doit permettre de concactener le contenu des fichiers textes `a`, `b` et `c` stockés dans ce dossier.
-
-Par exemple, si chacun des fichiers a son nom pour contenu, la requête GET décrite ci-dessus devrait retourner une réponse contenant la chaine de caractère `abc`.
+[url_personalize_cloudflare](/simple_personalize_cloudflare)
 
 
 
-A template for kick starting a Cloudflare worker project using
-[`wasm-pack`](https://github.com/rustwasm/wasm-pack).
+[handlebars_personalize_cloudflare](/handlebars_personalize_cloudflare)
 
-This template is designed for compiling Rust libraries into WebAssembly and
-publishing the resulting worker to Cloudflare's worker infrastructure.
+[geo_aggregation_cloudflare](/geo_aggregation_cloudflare)

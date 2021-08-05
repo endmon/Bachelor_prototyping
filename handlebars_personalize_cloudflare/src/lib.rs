@@ -15,7 +15,7 @@ use urlparse::urlparse;
 use urlparse::GetQuery;  // Trait
 use worker_kv::*;
 use std::collections::BTreeMap;
-use handlebars::Handlebars;
+use handlebars::*;
 
 mod utils;
 
@@ -131,29 +131,29 @@ pub async fn main(request:Request) -> String {
         json_obj= json_obj_result.unwrap();
         let mut template_directory = "".to_string();
 
-        //on check le ressourceType
-        if json_obj.get("ressourceType").is_some() {
-            template_directory = format!("{}/",json_obj.get("ressourceType").unwrap().as_str().unwrap().to_string());
+        //on check le resourceType
+        if json_obj.get("resourceType").is_some() {
+            template_directory = format!("{}/",json_obj.get("resourceType").unwrap().as_str().unwrap().to_string());
         }
 
         if !v.is_empty() {
             template_name = v.pop().unwrap().to_string();
+
         }
-        target_template = format!("{}/template/{}{}.hbs", site, template_directory, template_name);
+        target_template = format!("{}/template/{}{}", site, template_directory, template_name);
 
 
     } else {
-        target_template = "http://miguel-gouveia.me/template/error-404.hbs".to_string();
+        target_template = "http://miguel-gouveia.me/template/error-404".to_string();
 
         let error = format!("{{ \"error-message\": \"Le fichier {} n'est pas présent!\" }}", target_json);
         json_obj = serde_json::from_str(&error).unwrap();
     }
-
+    target_template = format!("{}.hbs", target_template);
     template = fetch_rust_wasm(&target_template).await.unwrap();
 
-    handlebars.register_template_string("hello", template); //bind le template source2 avec le nom "hello"
-    result = handlebars.render("hello", &json_obj).unwrap(); //render le template nommer "hello" avec l'objet test1
-
+    handlebars.register_template_string("template", template); //bind le template "template" avec le nom "template"
+    result = handlebars.render("template", &json_obj).unwrap(); //render le template nommer "template" avec l'objet test1
 
     result
 }
